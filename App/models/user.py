@@ -16,8 +16,8 @@ class User(db.Model):
     }
 
     def __init__(self, username, email, password):
-        self.username = username,
-        self.email = email,
+        self.username = username
+        self.email = email
         self.set_password(password)
 
     def get_json(self):
@@ -73,7 +73,7 @@ class DataFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
     upload_time = db.Column(db.DateTime, default=func.now())
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     reports = db.relationship('Report', backref='datafile', lazy=True)
 
@@ -122,7 +122,7 @@ class Report(db.Model):
     published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=func.now())
 
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     datafile_id = db.Column(db.Integer, db.ForeignKey('data_file.id'), nullable=False)
 
     charts = db.relationship('Chart', backref='report', lazy=True)
