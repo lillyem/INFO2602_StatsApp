@@ -7,3 +7,4 @@ def initialize():
     db.create_all()
     create_user('bob', 'bob@example.com', 'bobpass')
 
+

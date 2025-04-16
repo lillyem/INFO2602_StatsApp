@@ -26,14 +26,23 @@ def get_user_page():
 def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
     
+@auth_views.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
+
+@index_views.route('/')
+def home_page():
+    return render_template('index.html')
+
 
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
     token = login(data['username'], data['password'])
-    response = redirect(request.referrer)
+    response = redirect(url_for('index_views.home_page'))
     if not token:
         flash('Bad username or password given'), 401
+        return redirect(url_for('auth_views.login_page'))
     else:
         flash('Login Successful')
         set_access_cookies(response, token) 

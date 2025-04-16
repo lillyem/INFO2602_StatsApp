@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Login - PurpleStats{% endblock %}
+
+{% block content %}
+<div class="row" style="margin-top: 5rem;">
+  <div class="col s12 m8 l6 offset-m2 offset-l3">
+    <div class="card white z-depth-3" style="border-radius: 15px;">
+      <div class="card-content">
+        <h5 class="center" style="color: #653A8C;">Welcome Back</h5>
+        <form method="POST" action="/login">
+          <div class="input-field">
+            <input id="username" name="username" type="text" class="validate" required>
+            <label for="username">Username</label>
+          </div>
+          <div class="input-field">
+            <input id="password" name="password" type="password" class="validate" required>
+            <label for="password">Password</label>
+          </div>
+          <div class="center">
+            <button type="submit" class="btn deep-purple lighten-1 waves-effect waves-light" style="width: 100%;">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,3 +1,117 @@
 html {
     padding: 0;
 }
+
+body {
+  background: linear-gradient(135deg, #37185A, #653A8C, #9768C1, #A88AE9);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.login-card {
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+  background-color: #653A8C; /* or try #9768C1 */
+}
+
+  
+  .login-top {
+    background: linear-gradient(to right, #653A8C, #9768C1);
+    color: white;
+    padding: 1rem;
+  }
+  
+  .signup-btn {
+    background-color: white;
+    color: #653A8C;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 8px;
+    display: inline-block;
+  }
+  
+  .login-middle {
+    padding: 1rem;
+  }
+  
+  .login-middle h2 {
+    color: #37185A;
+    margin: 0;
+  }
+  
+  .login-form {
+    padding: 1.5rem;
+  }
+  
+  .input-group {
+    position: relative;
+    margin-bottom: 1.2rem;
+  }
+  
+  .input-group label {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    color: #653A8C;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #9768C1;
+    border-radius: 25px;
+    outline: none;
+  }
+  
+  .login-btn {
+    background-color: #653A8C;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .login-btn:hover {
+    background-color: #9768C1;
+  }
+  
+  .forgot {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #653A8C;
+    text-decoration: none;
+  }
+  
