@@ -30,9 +30,16 @@ def identify_page():
 def login_page():
     return render_template('login.html')
 
-@auth_views.route('/signup', methods=['GET'])
+@auth_views.route('/signup', methods=['GET', 'POST'])
 def signup_page():
-    return render_template('signup.html')
+    if request.method == 'GET':
+        return render_template('signup.html')
+    elif request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        # Add your user creation logic here
+        return redirect(url_for('auth_views.login_page'))
 
 @index_views.route('/')
 def home_page():

@@ -1,13 +1,36 @@
-<h2>Sign Up</h2>
-<form method="POST" action="{{ url_for('auth_views.signup_action') }}">
-  <label>Username:</label>
-  <input type="text" name="username" required>
-  <br>
-  <label>Email:</label>
-  <input type="email" name="email" required>
-  <br>
-  <label>Password:</label>
-  <input type="password" name="password" required>
-  <br>
-  <button type="submit">Sign Up</button>
-</form>
+{% extends "layout.html" %}
+
+{% block title %}Sign Up - PurpleStats{% endblock %}
+{% block page %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="row" style="margin-top: 4rem;">
+  <div class="col s12 m8 offset-m2 l6 offset-l3">
+    <div class="card z-depth-3" style="border-radius: 15px; background-color: #F5ECFA;">
+      <div class="card-content">
+        <h5 class="center" style="color: #653A8C; font-weight: 600;">Create Your Account</h5>
+        <form method="POST" action="{{ url_for('auth_views.signup_page') }}">
+          <div class="input-field">
+            <input id="username" name="username" type="text" class="validate" required>
+            <label for="username">Username</label>
+          </div>
+          <div class="input-field">
+            <input id="email" name="email" type="email" class="validate" required>
+            <label for="email">Email</label>
+          </div>
+          <div class="input-field">
+            <input id="password" name="password" type="password" class="validate" required>
+            <label for="password">Password</label>
+          </div>
+          <div class="center">
+            <button type="submit" class="btn waves-effect waves-light deep-purple lighten-1" style="width: 100%;">Sign Up</button>
+          </div>
+        </form>
+        <div class="center" style="margin-top: 1.5rem;">
+          <a href="/login" class="deep-purple-text text-darken-2">Already have an account? Log in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
