@@ -3,7 +3,7 @@
   <head>
     <!-- Import custom stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    
+
     <!-- Google Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -71,26 +71,23 @@
   <body>
     <nav>
       <div class="nav-wrapper container">
-        <a href="#!" class="brand-logo center">{% block page %}{% endblock %}</a>
-        <ul id="nav-mobile" class="left">
+        <a href="/" class="brand-logo">PurpleStats</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a href="/">Home</a></li>
           <li><a href="/users">Users Jinja</a></li>
+          <li><a href="/static/users">Users JS</a></li>
           {% if is_authenticated %}
             <li><a href="/identify">Identify</a></li>
+            <li><a href="/upload">Upload</a></li>
+            <li><a href="/report">Report</a></li>
+            <li><a href="/logout">Logout</a></li>
+          {% else %}
+            <li><a href="/login">Login</a></li>
           {% endif %}
-          <li><a href="/static/users">Users JS</a></li>
         </ul>
-        {% if is_authenticated %}
-        <ul id="nav-mobile" class="right">
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-        {% else %}
-        <ul id="nav-mobile" class="right">
-          <li><a href="/login">Login</a></li>
-        </ul>
-        {% endif %}
       </div>
     </nav>
+    
 
     <div class="container" id="content">
       {% block content %}{% endblock %}
