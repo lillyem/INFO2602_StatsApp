@@ -35,7 +35,7 @@ def admin_home():
    try:
        verify_jwt_in_request()
        if current_user and current_user.type == 'admin':
-           return render_template('index.html', is_authenticated=True)
+           return render_template('admin/admin_index.html', is_authenticated=True)
        else:
            flash("Admins only.")
            return redirect(url_for('auth_views.login_page'))
