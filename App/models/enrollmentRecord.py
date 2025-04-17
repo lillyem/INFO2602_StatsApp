@@ -28,3 +28,4 @@ class EnrollmentRecord(db.Model):
         }
     def __repr__(self):
         return f'<EnrollmentRecord {self.id} - {self.course_code}>'
+
