@@ -29,3 +29,15 @@ class EnrollmentRecord(db.Model):
     def __repr__(self):
         return f'<EnrollmentRecord {self.id} - {self.course_code}>'
 
+    @staticmethod
+    def get_by_course_code(code):
+        return EnrollmentRecord.query.filter_by(course_code=code).all()
+
+    @staticmethod
+    def get_by_department(department):
+        return EnrollmentRecord.query.filter_by(department=department).all()
+
+    @staticmethod
+    def get_total_students_for_course(code):
+        records = EnrollmentRecord.query.filter_by(course_code=code).all()
+        return sum([r.num_students for r in records])

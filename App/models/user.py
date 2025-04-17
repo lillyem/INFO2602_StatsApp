@@ -54,6 +54,23 @@ class Admin(User):
     datafiles = db.relationship('DataFile', backref='admin', lazy=True)
     reports = db.relationship('Report', backref='admin', lazy=True)
 
+    def upload_datafile(self, filename):
+        new_file = DataFile(filename=filename, admin_id=self.id)
+        db.session.add(new_file)
+        db.session.commit()
+        return new_file
+
+    def create_report(self, title, datafile_id, description=""):
+        new_report = Report(
+            title=title,
+            description=description,
+            admin_id=self.id,
+            datafile_id=datafile_id
+        )
+        db.session.add(new_report)
+        db.session.commit()
+        return new_report
+
     def __init__(self, staff_id, username, email, password):
         super().__init__(username, email, password)
         self.staff_id = staff_id

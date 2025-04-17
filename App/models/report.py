@@ -15,6 +15,9 @@ class Report(db.Model):
 
     charts = db.relationship('Chart', backref='report', lazy=True)
 
+    def get_charts(self):
+        return self.charts  
+
     def __init__(self, title, admin_id, datafile_id, description=""):
         self.title = title
         self.description = description
