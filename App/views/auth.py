@@ -40,7 +40,7 @@ def home_page():
     return render_template('index.html')
 
 
-@auth_views.route('/login', methods=['POST'])
+""" @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
     token = login(data['username'], data['password'])
@@ -51,7 +51,32 @@ def login_action():
     else:
         flash('Login Successful')
         set_access_cookies(response, token) 
-    return response
+    return response """
+@auth_views.route('/login', methods=['POST'])
+def login_action():
+   data = request.form
+   token = login(data['username'], data['password'])
+  
+   if not token:
+       flash('Bad username or password given')
+       return redirect(url_for('auth_views.login_page'))
+  
+   response = redirect(url_for('index_views.home_page'))  # Default redirect
+
+
+   # Get user object from DB to check type
+   from App.models import User
+   user = User.query.filter_by(username=data['username']).first()
+
+
+   if user and user.type == 'admin':
+       response = redirect(url_for('admin_views.admin_home'))  # change this line
+
+
+   set_access_cookies(response, token)
+   flash('Login Successful')
+   return response
+
 
 @auth_views.route('/logout', methods=['GET'])
 def logout_action():
@@ -66,16 +91,22 @@ def signup_action():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
+    staff_id = data.get('staff_id')
 
-    from App.controllers.user import create_user  # make sure this import works
+    from App.controllers.user import create_user, create_admin  # make sure this import works
 
-    user = create_user(username, email, password)
+    if staff_id:
+        user = create_admin(staff_id, username, email, password)
+        user_type = 'admin'
+    else:
+        user = create_user(username, email, password)
+        user_type = 'user'
 
     if user:
-        flash('Account created successfully. You can log in now!')
+        flash(f'{user_type.capitalize()} account created successfully. You can log in now!')
         return redirect(url_for('auth_views.login_page'))
     else:
-        flash('Username already exists. Try another one.')
+        flash('Username already or Staff ID exists. Try another one.')
         return redirect(url_for('auth_views.signup_page'))
 '''
 API Routes
@@ -108,6 +139,7 @@ def signup_api():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
+    user_type = data.get('type', 'user')
 
     from App.controllers.user import create_user
 

@@ -1,4 +1,4 @@
-from App.models import User
+from App.models import User, Admin
 from App.database import db
 
 #def create_user(username, password):
@@ -8,10 +8,20 @@ from App.database import db
     #return newuser
 
 def create_user(username, email, password):
+    if User.query.filter((User.username == username) | (User.email == email)).first():
+        return None
     newuser = User(username=username, email=email, password=password)
     db.session.add(newuser)
     db.session.commit()
     return newuser
+
+def create_admin(staff_id, username, email, password):
+    if User.query.filter((User.username == username) | (User.email == email) | (Admin.staff_id == staff_id)).first():
+        return None
+    admin = Admin(staff_id=staff_id, username=username, email=email, password=password)
+    db.session.add(admin)
+    db.session.commit()
+    return admin
 
 def get_user_by_username(username):
     return User.query.filter_by(username=username).first()

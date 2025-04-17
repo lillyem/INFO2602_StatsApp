@@ -5,7 +5,10 @@ from App.models import User
 def login(username, password):
   user = User.query.filter_by(username=username).first()
   if user and user.check_password(password):
-    return create_access_token(identity=username)
+    if user.is_admin():
+       return create_access_token(identity = username, additional_claims = {"role":"admin"})
+    else:
+       return create_access_token(identity=username)
   return None
 
 
