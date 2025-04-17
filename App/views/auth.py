@@ -88,6 +88,11 @@ def logout_action():
 @auth_views.route('/signup', methods=['POST'])
 def signup_action():
     data = request.form
+
+    if not data.get('terms'):
+        flash('You must agree to the Terms and Conditions to sign up.')
+        return redirect(url_for('auth_views.signup_page'))
+    
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
