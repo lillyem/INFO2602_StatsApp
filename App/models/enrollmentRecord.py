@@ -26,4 +26,6 @@ class EnrollmentRecord(db.Model):
             "num_students": self.num_students,
             "datafile_id": self.datafile_id
         }
-    
+    def __repr__(self):
+        return f'<EnrollmentRecord {self.id} - {self.course_code}>'
+
