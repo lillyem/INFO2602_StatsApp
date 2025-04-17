@@ -30,6 +30,10 @@ def identify_page():
 def login_page():
     return render_template('login.html')
 
+@auth_views.route('/signup', methods=['GET'])
+def signup_page():
+    return render_template('signup.html')
+
 @index_views.route('/')
 def home_page():
     return render_template('index.html')
@@ -55,6 +59,23 @@ def logout_action():
     unset_jwt_cookies(response)
     return response
 
+@auth_views.route('/signup', methods=['POST'])
+def signup_action():
+    data = request.form
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    from App.controllers.user import create_user  # make sure this import works
+
+    user = create_user(username, email, password)
+
+    if user:
+        flash('Account created successfully. You can log in now!')
+        return redirect(url_for('auth_views.login_page'))
+    else:
+        flash('Username already exists. Try another one.')
+        return redirect(url_for('auth_views.signup_page'))
 '''
 API Routes
 '''
@@ -79,3 +100,19 @@ def logout_api():
     response = jsonify(message="Logged Out!")
     unset_jwt_cookies(response)
     return response
+
+@auth_views.route('/api/signup', methods=['POST'])
+def signup_api():
+    data = request.json
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    from App.controllers.user import create_user
+
+    user = create_user(username, email, password)
+
+    if user:
+        return jsonify({'message': 'Account created successfully.'}), 201
+    else:
+        return jsonify({'message': 'Username already exists.'}), 409
