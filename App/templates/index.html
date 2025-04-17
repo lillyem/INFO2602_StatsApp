@@ -1,13 +1,32 @@
 {% extends "layout.html" %}
-{% block title %}Flask MVC App{% endblock %}
-{% block page %}Flask MVC App{% endblock %}
-
-{{ super() }}
+{% block title %}PurpleStats Dashboard{% endblock %}
+{% block page %}Welcome to PurpleStats{% endblock %}
 
 {% block content %}
-    <h1>Flask MVC</h1>
+<div class="center-wrapper">
+  <div class="card white-text purple darken-2 z-depth-3" style="padding: 30px; border-radius: 15px;">
+    <h4 style="margin-top: 0;">PurpleStats – Empowering UWI Data Insights</h4>
+    
     {% if is_authenticated %}
-        <p> Welcome {{current_user.username}} </p>
+      <p>Welcome, <strong>{{ current_user.username }}</strong> 👋</p>
     {% endif %}
-    <p>This is a boileplate flask application which follows the MVC pattern for structuring the project.</p>
+    
+    <p>
+      PurpleStats is a dynamic platform developed for The University of the West Indies (UWI) to streamline the process of publishing insightful statistical reports. This tool allows administrators to upload raw data files and generate clear, interactive reports with charts that can be publicly shared.
+    </p>
+
+    <ul style="text-align: left; margin-top: 1rem;">
+      <li>📊 Upload data files directly to the system</li>
+      <li>📈 Automatically generate visual charts and summaries</li>
+      <li>📂 Publish professional reports</li>
+      <li>🔍 Public access to statistical dashboards and insights</li>
+    </ul>
+
+    <div class="center" style="margin-top: 2rem;">
+      <a href="/upload" class="btn-large waves-effect waves-light lavender lighten-3 deep-purple-text text-darken-4" style="border-radius: 10px;">
+        Start Your Report
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}
