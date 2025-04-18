@@ -4,17 +4,66 @@
 {% block page %}Upload Report{% endblock %}
 
 {% block content %}
-  <h5>Upload a Report</h5>
-  <form method="POST" enctype="multipart/form-data">
-    <div class="file-field input-field">
-      <div class="btn deep-purple lighten-1">
-        <span>File</span>
-        <input type="file" name="report" required>
-      </div>
-      <div class="file-path-wrapper">
-        <input class="file-path validate" type="text" placeholder="Upload your report file">
-      </div>
+<h4>Welcome to the upload portal!</h4>
+<p>Please select the relevant fields that apply to your report.</p>
+<p>Once you have selected the relevant fields, please upload your report.</p>
+<br>
+
+<form method="POST" enctype="multipart/form-data">
+
+  <!-- Year Dropdown -->
+  <div class="input-field">
+    <select id="year" name="year" required>
+      <option value="" disabled selected hidden>Choose year (required)</option>
+      <option value="2023">2023</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+    </select>
+    <label for="year">Select Year</label>
+  </div>
+
+  <!-- Campus Dropdown -->
+  <div class="input-field">
+    <select id="campus" name="campus" required>
+      <option value="" disabled selected hidden>Choose campus (required)</option>
+      <option value="Mona">Mona</option>
+      <option value="St. Augustine">St. Augustine</option>
+      <option value="Cave Hill">Cave Hill</option>
+      <option value="Open Campus">Open Campus</option>
+      <option value="Five Islands">Five Islands</option>
+    </select>
+    <label for="campus">Select Campus</label>
+  </div>
+
+  <!-- Type of Report Dropdown -->
+  <div class="input-field">
+    <select id="report" name="report" required>
+      <option value="" disabled selected hidden>Choose Type of Report (required)</option>
+      <option value="Attendance">Attendance</option>
+      <option value="Enrollment">Enrollment</option>
+      <option value="Bursaries Awarded">Bursaries Awarded</option>
+      <option value="Output of Graduates">Output of Graduates</option>
+      <option value="Student Demographic">Student Demographic</option>
+    </select>
+    <label for="report">Select Type of Report</label>
+  </div>
+
+  <br>
+  <h5>Upload your report here</h5>
+  <div class="file-field input-field">
+    <div class="btn deep-purple lighten-1">
+      <span>File</span>
+      <input type="file" name="report" required>
     </div>
+    <div class="file-path-wrapper">
+      <input class="file-path validate" type="text" placeholder="Upload your report file">
+    </div>
+  </div>
+
+  <!-- Centered Button -->
+  <div class="center-align">
     <button type="submit" class="btn deep-purple">Upload</button>
-  </form>
+  </div>
+</form>
 {% endblock %}
