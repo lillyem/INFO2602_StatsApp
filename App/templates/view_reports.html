@@ -62,9 +62,9 @@
             {% if report.created_at != 'Unknown' %}<strong>Uploaded on:</strong> {{ report.created_at }}<br>{% endif %}
             <!-- <strong>Uploaded by:</strong> {{ report.uploaded_by }} -->
           </p>
-          <a href="{{ url_for('static', filename=report.filepath.split('static/')[-1]) }}" class="secondary-content" target="_blank">
-            <!-- <a href="{{ url_for('static', filename='reports/' + report.filename) }}" target="_blank">{{ report.filename }}</a> -->
-            <i class="material-icons">file_download</i>
+          <!-- <a href="{{ url_for('static', filename=report.filepath.split('static/')[-1]) }}" class="secondary-content" target="_blank"> -->
+            <a href="{{ url_for('static', filename='reports/' + report.filename) }}" target="_blank">{{ report.filename }}</a>
+            <!-- <i class="material-icons">file_download</i> -->
           </a>
         </li>
       {% endfor %}
