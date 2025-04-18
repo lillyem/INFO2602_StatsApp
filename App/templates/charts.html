@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Generate Charts{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h4 class="center-align">Generate a Chart</h4>
+
+  <!-- Data input form -->
+  <form method="POST" class="white z-depth-2" style="padding: 20px; border-radius: 10px;">
+    <div class="input-field">
+      <textarea id="data" name="data" class="materialize-textarea" placeholder="Enter data in format: Label,Value (one per line)"></textarea>
+      <label for="data">Chart Data</label>
+    </div>
+    <div class="input-field center-align">
+      <button class="btn purple darken-2" type="submit">Generate Chart</button>
+    </div>
+  </form>
+
+  <!-- Chart output -->
+  {% if chart_data %}
+    <div id="chart_div" style="margin-top: 40px;"></div>
+
+    <!-- Load Google Charts JS library -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          {% for label, value in chart_data %}
+            ['{{ label }}', {{ value }}],
+          {% endfor %}
+        ]);
+
+        var options = {
+          title: 'Your Custom Chart',
+          legend: { position: 'none' },
+          width: 600,
+          height: 400,
+          colors: ['#6a1b9a']
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  {% endif %}
+</div>
+{% endblock %}
