@@ -4,7 +4,19 @@
 {% block page %}Admin Dashboard{% endblock %}
 
 {% block content %}
+  <div class="center-align">
+    <img src="https://upload.wikimedia.org/wikipedia/en/1/19/UWI_STA_Coat_of_Arms.png" alt="UWI Coat of Arms" style="max-width: 200px;">
+  </div>
+
   <h4>Welcome, <strong>{{ current_user.username }}</strong> 👋</h4>
-  <p>This is your admin dashboard. You can upload via the upload tab and view via the report tab.</p>
+  <h6>This is your admin dashboard. Here's how to navigate the site: </h6>
+  <p>1. You can access the upload portal via the "upload" button on the navigation bar.</p>
+  <p>2. There, you would be able to upload your reports (pdf) and charts (images).</p>
+  <p>3. Be sure to select the relevant categories before clicking the upload button.</p>
+  <p>4. You can view uploaded reports in the "reports" tab on the navigation bar.</p>
+  <p>5. You can view charts in the "charts" tab on the navigation bar. </p>
+
+  <br>
+  <p>Thank you for using PurpleStats!</p>
 
 {% endblock %}

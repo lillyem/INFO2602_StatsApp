@@ -71,14 +71,25 @@
   <body>
     <nav>
       <div class="nav-wrapper container">
-        <a href="/" class="brand-logo">PurpleStats</a>
+        <!-- Left-aligned UWI logo -->
+        <a href="/" class="left">
+          <img src="https://upload.wikimedia.org/wikipedia/en/1/19/UWI_STA_Coat_of_Arms.png" 
+               alt="UWI Logo" 
+               style="height: 60px; margin-top: 2px;">
+        </a>
+    
+        <!-- Centered brand name -->
+        <a href="/" class="brand-logo center">PurpleStats</a>
+    
+        <!-- Right-aligned nav links -->
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a href="/">Home</a></li>
-          <!-- <li><a href="/users">Users Jinja</a></li> -->
-          <!-- <li><a href="/static/users">Users JS</a></li> -->
+    
           {% if is_authenticated %}
-            <!-- <li><a href="/identify">Identify</a></li> -->
-            <li><a href="/admin/upload">Upload</a></li>
+            {% if current_user.is_admin() %}
+              <li><a href="/admin">Admin</a></li>
+              <li><a href="/admin/upload">Upload</a></li>
+            {% endif %}
             <li><a href="/admin/reports">Report</a></li>
             <li><a href="/logout">Logout</a></li>
           {% else %}
@@ -87,6 +98,9 @@
         </ul>
       </div>
     </nav>
+    
+    
+    
     
 
     <div class="container" id="content">

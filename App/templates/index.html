@@ -1,10 +1,14 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} 
 {% block title %}PurpleStats Dashboard{% endblock %}
 {% block page %}Welcome to PurpleStats{% endblock %}
 
 {% block content %}
 <div class="center-wrapper">
-  <div class="card white-text purple darken-2 z-depth-3" style="padding: 30px; border-radius: 15px;">
+  <div class="card white-text purple darken-2 z-depth-3" style="padding: 30px; padding-top: 0px; border-radius: 15px;">
+    <div class="center-align" style="margin-top: 2rem;">
+      <img src="https://upload.wikimedia.org/wikipedia/en/1/19/UWI_STA_Coat_of_Arms.png" alt="UWI Coat of Arms" style="max-width: 100px;">
+    </div>
+    
     <h4 style="margin-top: 0;">PurpleStats – Empowering UWI Data Insights</h4>
     
     {% if is_authenticated %}
@@ -16,13 +20,14 @@
     </p>
 
     <ul style="text-align: left; margin-top: 1rem;">
-      <li>📊 Upload data files directly to the system</li>
-      <li>📈 Automatically generate visual charts and summaries</li>
-      <li>📂 Publish professional reports</li>
-      <li>🔍 Public access to statistical dashboards and insights</li>
-      <li style="margin-top: 20px;">Sign up for your free account to get started!</li> 
+      <li>->Upload data files directly to the system</li>
+      <li>->Filter reports based on your chosen category</li>
+      <li>->Publish professional reports</li>
+      <li>->Public access to statistical dashboards and insights</li>
+      <li style="margin-top: 20px;">Sign up to get started!</li> 
     </ul>
 
+   
     <div class="center" style="margin-top: 2rem;">
       <!-- <a href="/upload" class="btn-large waves-effect waves-light lavender lighten-3 deep-purple-text text-darken-4" style="border-radius: 10px;">
         Start Your Report
