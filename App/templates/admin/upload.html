@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}Upload Report{% endblock %}
+{% block page %}Upload Report{% endblock %}
+
+{% block content %}
+  <h5>Upload a Report</h5>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="file-field input-field">
+      <div class="btn deep-purple lighten-1">
+        <span>File</span>
+        <input type="file" name="report" required>
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path validate" type="text" placeholder="Upload your report file">
+      </div>
+    </div>
+    <button type="submit" class="btn deep-purple">Upload</button>
+  </form>
+{% endblock %}

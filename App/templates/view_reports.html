@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Reports{% endblock %}
+{% block page %}Uploaded Reports{% endblock %}
+
+{% block content %}
+  <h5>Available Reports</h5>
+  {% if reports %}
+    <ul class="collection">
+      {% for report in reports %}
+        <li class="collection-item">
+          <a href="{{ url_for('static', filename='reports/' + report) }}" target="_blank">{{ report }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No reports have been uploaded yet.</p>
+  {% endif %}
+{% endblock %}
