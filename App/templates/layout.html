@@ -70,19 +70,20 @@
 
   <body>
     <nav>
-      <div class="nav-wrapper container">
-        <!-- Left-aligned UWI logo -->
-        <a href="/" class="left">
-          <img src="https://upload.wikimedia.org/wikipedia/en/1/19/UWI_STA_Coat_of_Arms.png" 
-               alt="UWI Logo" 
-               style="height: 60px; margin-top: 2px;">
-        </a>
+      <div class="nav-wrapper container" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
     
-        <!-- Centered brand name -->
-        <a href="/" class="brand-logo center">PurpleStats</a>
+        <!-- Left: Logo and Brand -->
+        <div style="display: flex; align-items: center;">
+          <a href="/" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/1/19/UWI_STA_Coat_of_Arms.png" 
+                 alt="UWI Logo" 
+                 style="height: 50px; margin-right: 12px;">
+            <span style="font-size: 1.7rem; color: white; font-weight: bold;">PurpleStats</span>
+          </a>
+        </div>
     
-        <!-- Right-aligned nav links -->
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <!-- Right: Navigation links -->
+        <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex; gap: 12px; margin: 0;">
           <li><a href="/">Home</a></li>
     
           {% if is_authenticated %}
@@ -98,11 +99,9 @@
             <li><a href="/login">Login</a></li>
           {% endif %}
         </ul>
+    
       </div>
     </nav>
-    
-    
-    
     
 
     <div class="container" id="content">
