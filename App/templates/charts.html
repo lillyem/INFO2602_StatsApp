@@ -1,51 +1,52 @@
 {% extends "layout.html" %}
-{% block title %}Generate Charts{% endblock %}
+
+{% block title %}View Charts{% endblock %}
 
 {% block content %}
 <div class="container">
-  <h4 class="center-align">Generate a Chart</h4>
+  <h4 class="center-align">Available Charts</h4>
 
-  <!-- Data input form -->
-  <form method="POST" class="white z-depth-2" style="padding: 20px; border-radius: 10px;">
-    <div class="input-field">
-      <textarea id="data" name="data" class="materialize-textarea" placeholder="Enter data in format: Label,Value (one per line)"></textarea>
-      <label for="data">Chart Data</label>
+  <!-- Filters -->
+  <form method="get" class="row">
+    <div class="input-field col s6">
+      <input type="text" name="title" id="title" value="{{ search_title or '' }}">
+      <label for="title">Search by Title</label>
     </div>
-    <div class="input-field center-align">
-      <button class="btn purple darken-2" type="submit">Generate Chart</button>
+    <div class="input-field col s4">
+      <select name="chart_type" id="chart_type">
+        <option value="" disabled {% if not selected_type %}selected{% endif %}>Select Chart Type</option>
+        <option value="" {% if not selected_category %}selected{% endif %}>All</option>
+        <option value="Bar" {% if selected_type == "Bar" %}selected{% endif %}>Bar</option>
+        <option value="Pie" {% if selected_type == "Pie" %}selected{% endif %}>Pie</option>
+        <option value="Line" {% if selected_type == "Line" %}selected{% endif %}>Line</option>
+      </select>
+      <label for="chart_type">Chart Type</label>
+    </div>
+    <div class="input-field col s2 center-align">
+      <button type="submit" class="btn purple darken-2">Filter</button>
     </div>
   </form>
 
-  <!-- Chart output -->
-  {% if chart_data %}
-    <div id="chart_div" style="margin-top: 40px;"></div>
-
-    <!-- Load Google Charts JS library -->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {packages: ['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Label', 'Value'],
-          {% for label, value in chart_data %}
-            ['{{ label }}', {{ value }}],
-          {% endfor %}
-        ]);
-
-        var options = {
-          title: 'Your Custom Chart',
-          legend: { position: 'none' },
-          width: 600,
-          height: 400,
-          colors: ['#6a1b9a']
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-    </script>
-  {% endif %}
+  <div class="section">
+    {% if charts %}
+      {% for chart in charts %}
+        <div class="card white z-depth-1" style="padding: 20px; margin-bottom: 20px;">
+          <h5>{{ chart.title }} ({{ chart.chart_type }})</h5>
+          <p><strong>Raw Data:</strong></p>
+          <pre>{{ chart.data }}</pre>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No charts found.</p>
+    {% endif %}
+  </div>
 </div>
+
+<!-- Init Materialize Select -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+  });
+</script>
 {% endblock %}

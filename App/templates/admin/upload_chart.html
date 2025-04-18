@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}Upload Chart{% endblock %}
+{% block page %}Upload Chart{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h4 class="center-align">Upload a Chart Image</h4>
+
+  <p>Upload a PNG or JPEG file that represents the chart. Please provide a title, type, and description for the chart.</p>
+
+  <!-- Form to upload the chart image -->
+  <form method="POST" enctype="multipart/form-data" class="white z-depth-2" style="padding: 20px; border-radius: 10px;">
+    <!-- Title input field -->
+    <div class="input-field">
+      <input type="text" id="title" name="title" required>
+      <label for="title">Chart Title</label>
+    </div>
+
+    <!-- Chart type select field -->
+    <div class="input-field">
+      <select name="chart_type" id="chart_type" required>
+        <option value="" disabled selected hidden>Select chart type</option>
+        <option value="Bar">Bar</option>
+        <option value="Line">Line</option>
+        <option value="Pie">Pie</option>
+        <!-- <option value="scatter">Scatter Plot</option>
+        <option value="area">Area Chart</option>
+        <option value="other">Other</option> -->
+      </select>
+      <label for="chart_type">Chart Type</label>
+    </div>
+
+    <!-- Description input field -->
+    <div class="input-field">
+      <textarea id="description" name="description" class="materialize-textarea" placeholder="Optional: Describe your chart"></textarea>
+      <label for="description">Chart Description</label>
+    </div>
+
+    <!-- File input field for chart image -->
+    <div class="file-field input-field">
+      <div class="btn deep-purple lighten-1">
+        <span>File</span>
+        <input type="file" name="chart" accept=".png, .jpg, .jpeg" required>
+      </div>
+      <div class="file-path-wrapper">
+        <input class="file-path validate" type="text" placeholder="Upload your chart image (PNG, JPEG)">
+      </div>
+    </div>
+
+    <!-- Submit button -->
+    <div class="center-align">
+      <button type="submit" class="btn deep-purple lighten-1">Upload Chart</button>
+    </div>
+  </form>
+
+  <!-- Display flash messages -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="collection">
+        {% for message in messages %}
+          <li class="collection-item">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+</div>
+
+<!-- Materialize requires JavaScript to initialize the select element -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+  });
+</script>
+{% endblock %}

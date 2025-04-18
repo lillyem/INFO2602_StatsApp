@@ -117,21 +117,6 @@ def signup_action():
 API Routes
 '''
 
-@auth_views.route('/charts', methods=['GET', 'POST'])
-def charts():
-    chart_data = None
-    if request.method == 'POST':
-        raw_data = request.form['data']
-        lines = raw_data.strip().split('\n')
-        chart_data = []
-        for line in lines:
-            try:
-                label, value = line.split(',')
-                chart_data.append((label.strip(), float(value.strip())))
-            except ValueError:
-                continue  # skip invalid lines
-    return render_template('charts.html', chart_data=chart_data)
-
 @auth_views.route('/api/login', methods=['POST'])
 def user_login_api():
   data = request.json

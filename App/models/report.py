@@ -17,10 +17,10 @@ class Report(db.Model):
     #admin_name = db.Column(db.Integer, db.ForeignKey('user.username'), nullable=False)
     datafile_id = db.Column(db.Integer, db.ForeignKey('data_file.id'), nullable=False)
 
-    charts = db.relationship('Chart', backref='report', lazy=True)
+    #charts = db.relationship('Chart', backref='report', lazy=True)
 
-    def get_charts(self):
-        return self.charts  
+    """ def get_charts(self):
+        return self.charts   """
 
     def __init__(self, title, year, campus, report_type, admin_id, datafile_id, description=""):
         self.title = title

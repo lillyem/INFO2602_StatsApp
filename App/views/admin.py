@@ -6,6 +6,7 @@ from flask_admin import Admin
 from App.models import db, User
 from App.models.datafile import DataFile
 from App.models.report import Report
+from App.models import Chart
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.utils import secure_filename
 
@@ -48,10 +49,14 @@ def admin_home():
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'App', 'static', 'reports')
 ALLOWED_EXTENSIONS = {'pdf', 'csv', 'xlsx'}
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+CHART_UPLOAD_FOLDER = os.path.join(os.getcwd(), 'App', 'static', 'charts')
+CHART_ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-def allowed_file(filename):
-   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(CHART_UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename, allowed_exts):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_exts
 
 
 @admin_views.route('/admin/upload', methods=['GET', 'POST'])
@@ -73,7 +78,7 @@ def upload_report():
             flash('All fields are required.')
             return redirect(url_for('admin_views.upload_report'))
 
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename, ALLOWED_EXTENSIONS):
             # Ensure the folder exists
             if not os.path.exists(UPLOAD_FOLDER):
                 os.makedirs(UPLOAD_FOLDER)
@@ -106,7 +111,6 @@ def upload_report():
             return redirect(url_for('admin_views.upload_report'))
 
     return render_template('admin/upload.html', is_authenticated=True)
-
 
 
 @admin_views.route('/admin/reports', methods=['GET'])
@@ -160,3 +164,95 @@ def view_reports():
         flash('Please log in to view reports.')
         return redirect(url_for('auth_views.login_page')) 
  
+
+@admin_views.route('/admin/upload-chart', methods=['GET', 'POST'])
+@jwt_required()
+def upload_chart():
+    if not current_user or current_user.type != 'admin':
+        flash('Admins only.')
+        return redirect(url_for('auth_views.login_page'))
+
+    if request.method == 'POST':
+        # Retrieve form fields
+        title = request.form.get('title')
+        description = request.form.get('description')
+        file = request.files.get('chart')
+        chart_type = request.form.get('chart_type') 
+
+        # Basic validation
+        if not (title and chart_type and file):
+            flash('Title and chart file are required.')
+            return redirect(url_for('admin_views.upload_chart'))
+
+        # Allowed image extensions
+        allowed_extensions = {'png', 'jpg', 'jpeg'}
+
+        def allowed_file(filename):
+            return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+        if file and allowed_file(file.filename):
+            if not os.path.exists(CHART_UPLOAD_FOLDER):
+                os.makedirs(CHART_UPLOAD_FOLDER)
+
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(CHART_UPLOAD_FOLDER, filename)
+            file.save(file_path)
+
+            # Save to DB (optional: link to chart model or just store the path)
+            """ datafile = DataFile(filename=filename, admin_id=current_user.id)
+            db.session.add(datafile)
+            db.session.commit() """
+
+            # Optional: Save metadata as report/chart
+            chart = Chart(
+                title=title,
+                chart_type=chart_type,
+                data=filename  # or file_path if you want to store full path
+                #report_id=int(report_id)
+            )
+            db.session.add(chart)
+            db.session.commit()
+
+
+            flash('Chart image uploaded and saved successfully.')
+            return redirect(url_for('admin_views.upload_chart'))
+        else:
+            flash('Invalid file type. Please upload PNG or JPEG images.')
+            return redirect(url_for('admin_views.upload_chart'))
+
+    return render_template('admin/upload_chart.html', is_authenticated=True)
+
+@admin_views.route('/admin/charts', methods=['GET'])
+def view_charts():
+    # Optional filters via query string
+    try:
+        chart_type = request.args.get('chart_type')
+        title = request.args.get('title')
+
+        query = Chart.query
+
+        if chart_type:
+            query = query.filter_by(chart_type=chart_type)
+        if title:
+            query = query.filter(Chart.title.ilike(f"%{title}%"))
+
+        charts = query.all()
+
+        chart_list = []
+        for chart in charts:
+            chart_list.append({
+                'id': chart.id,
+                'title': chart.title,
+                'chart_type': chart.chart_type,
+                'data': chart.data,
+            })
+
+        return render_template(
+            'charts.html',
+            charts=chart_list,
+            selected_type=chart_type,
+            search_title=title
+        )
+    except Exception as e:
+        flash('Please log in to view reports.')
+        return redirect(url_for('auth_views.login_page')) 
