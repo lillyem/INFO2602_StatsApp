@@ -4,6 +4,8 @@ from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, se
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from flask_admin import Admin
 from App.models import db, User
+from App.models.datafile import DataFile
+from App.models.report import Report
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.utils import secure_filename
 
@@ -55,42 +57,106 @@ def allowed_file(filename):
 @admin_views.route('/admin/upload', methods=['GET', 'POST'])
 @jwt_required()
 def upload_report():
-   if not current_user or current_user.type != 'admin':
-       flash('Admins only.')
-       return redirect(url_for('auth_views.login_page'))
+    if not current_user or current_user.type != 'admin':
+        flash('Admins only.')
+        return redirect(url_for('auth_views.login_page'))
 
-   if request.method == 'POST':
-       file = request.files.get('report')
-       if file and allowed_file(file.filename):
-           filename = secure_filename(file.filename)
-           file.save(os.path.join(UPLOAD_FOLDER, filename))
-           flash('Report uploaded successfully.')
-           return redirect(url_for('admin_views.upload_report'))
-       else:
-           flash('Invalid file type. Please upload PDF, CSV, or XLSX.')
+    if request.method == 'POST':
+        # Retrieve form fields
+        year = request.form.get('year')
+        campus = request.form.get('campus')
+        report_type = request.form.get('report')
+        file = request.files.get('report')
 
-   return render_template('admin/upload.html', is_authenticated=True)
+        # Basic validation
+        if not (year and campus and report_type and file):
+            flash('All fields are required.')
+            return redirect(url_for('admin_views.upload_report'))
+
+        if file and allowed_file(file.filename):
+            # Ensure the folder exists
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
+
+            # Save to DB
+            datafile = DataFile(filename=filename, admin_id=current_user.id)
+            db.session.add(datafile)
+            db.session.commit()
+
+            report = Report(
+                title=request.form.get('title'),
+                description=request.form.get('description', ''),
+                year=int(request.form.get('year')),
+                campus=request.form.get('campus'),
+                report_type=request.form.get('report'),
+                admin_id=current_user.id,
+                datafile_id=datafile.id
+            )
+            db.session.add(report)
+            db.session.commit()
+
+            flash('Report uploaded and saved successfully.')
+            return redirect(url_for('admin_views.upload_report'))
+        else:
+            flash('Invalid file type. Please upload PDF, CSV, or XLSX.')
+            return redirect(url_for('admin_views.upload_report'))
+
+    return render_template('admin/upload.html', is_authenticated=True)
+
+
 
 @admin_views.route('/admin/reports', methods=['GET'])
 @jwt_required()
 def view_reports():
-    """ if not current_user or current_user.type != 'admin':
-        flash('Admins only.')
-        return redirect(url_for('auth_views.login_page')) """
+    try:
+        verify_jwt_in_request()
 
-    reports_dir = os.path.join(os.getcwd(), 'App', 'static', 'reports')
-    reports = []
+        # Get filter parameters from the query string
+        year = request.args.get('year')
+        campus = request.args.get('campus')
+        category = request.args.get('category')  # report_type
 
-    if os.path.exists(reports_dir):
-        for filename in os.listdir(reports_dir):
-            if os.path.isfile(os.path.join(reports_dir, filename)):
-                reports.append(filename)
+        # Base query
+        query = Report.query
 
-    return render_template('view_reports.html', reports=reports, is_authenticated=True)
+        if year:
+            query = query.filter_by(year=year)
+        if campus:
+            query = query.filter_by(campus=campus)
+        if category:
+            query = query.filter_by(report_type=category)
 
-  
-""" @admin_views.route('/admin')
-@jwt_required()
-def admin_home():
-       return render_template('index.html') """
+        reports = query.all()
 
+        enriched_reports = []
+        for report in reports:
+            datafile = report.datafile
+            enriched_reports.append({
+                'title': report.title,
+                'description': report.description,
+                'campus': report.campus,
+                'report_type': report.report_type,
+                'year': report.year,
+                'filename': datafile.filename,
+                'filepath': os.path.join('static', 'reports', datafile.filename),
+                'uploaded_by': report.admin_id,
+                'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
+            })
+
+        return render_template(
+            'view_reports.html',
+            reports=enriched_reports,
+            selected_year=year,
+            selected_campus=campus,
+            selected_category=category,
+            is_authenticated=True
+        )
+
+    except Exception as e:
+        flash('Please log in to view reports.')
+        return redirect(url_for('auth_views.login_page')) 
+ 

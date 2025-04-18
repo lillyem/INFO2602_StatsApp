@@ -4,16 +4,73 @@
 {% block page %}Uploaded Reports{% endblock %}
 
 {% block content %}
+
+  <h5>Filter Reports</h5>
+
+  <form method="GET" class="row">
+    <div class="input-field col s4">
+      <select name="year">
+        <option value="" {% if not selected_year %}selected{% endif %}>All Years</option>
+        <option value="2023" {% if selected_year == '2023' %}selected{% endif %}>2023</option>
+        <option value="2024" {% if selected_year == '2024' %}selected{% endif %}>2024</option>
+        <option value="2025" {% if selected_year == '2025' %}selected{% endif %}>2025</option>
+      </select>
+      <label for="year">Year</label>
+    </div>
+
+    <div class="input-field col s4">
+      <select name="campus">
+        <option value="" {% if not selected_campus %}selected{% endif %}>All Campuses</option>
+        <option value="Mona" {% if selected_campus == 'Mona' %}selected{% endif %}>Mona</option>
+        <option value="St. Augustine" {% if selected_campus == 'St. Augustine' %}selected{% endif %}>St. Augustine</option>
+        <option value="Cave Hill" {% if selected_campus == 'Cave Hill' %}selected{% endif %}>Cave Hill</option>
+        <option value="Open Campus" {% if selected_campus == 'Open Campus' %}selected{% endif %}>Open Campus</option>
+        <option value="Five Islands" {% if selected_campus == 'Five Islands' %}selected{% endif %}>Five Islands</option>
+      </select>
+      <label for="campus">Campus</label>
+    </div>
+
+    <div class="input-field col s4">
+      <select name="category">
+        <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+        <option value="Attendance" {% if selected_category == 'Attendance' %}selected{% endif %}>Attendance</option>
+        <option value="Enrollment" {% if selected_category == 'Enrollment' %}selected{% endif %}>Enrollment</option>
+        <option value="Bursaries Awarded" {% if selected_category == 'Bursaries Awarded' %}selected{% endif %}>Bursaries Awarded</option>
+        <option value="Output of Graduates" {% if selected_category == 'Output of Graduates' %}selected{% endif %}>Output of Graduates</option>
+        <option value="Student Demographic" {% if selected_category == 'Student Demographic' %}selected{% endif %}>Student Demographic</option>
+      </select>
+      <label for="category">Report Type</label>
+    </div>
+
+    <div class="col s12 center-align">
+      <button type="submit" class="btn deep-purple">Apply Filters</button>
+    </div>
+  </form>
+
+  <br>
+
   <h5>Available Reports</h5>
   {% if reports %}
     <ul class="collection">
       {% for report in reports %}
         <li class="collection-item">
-          <a href="{{ url_for('static', filename='reports/' + report) }}" target="_blank">{{ report }}</a>
+          <span class="title"><strong>{{ report.title or report.filename }}</strong></span>
+          <p>
+            {% if report.year %}<strong>Year:</strong> {{ report.year }}<br>{% endif %}
+            {% if report.campus %}<strong>Campus:</strong> {{ report.campus }}<br>{% endif %}
+            {% if report.report_type %}<strong>Type:</strong> {{ report.report_type }}<br>{% endif %}
+            {% if report.created_at != 'Unknown' %}<strong>Uploaded on:</strong> {{ report.created_at }}<br>{% endif %}
+            <!-- <strong>Uploaded by:</strong> {{ report.uploaded_by }} -->
+          </p>
+          <a href="{{ url_for('static', filename=report.filepath.split('static/')[-1]) }}" class="secondary-content" target="_blank">
+            <!-- <a href="{{ url_for('static', filename='reports/' + report.filename) }}" target="_blank">{{ report.filename }}</a> -->
+            <i class="material-icons">file_download</i>
+          </a>
         </li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>No reports have been uploaded yet.</p>
+    <p>No reports match your filters.</p>
   {% endif %}
+
 {% endblock %}
