@@ -116,11 +116,11 @@ def upload_report():
 
 
 @admin_views.route('/admin/reports', methods=['GET'])
-@jwt_required(locations=["cookies"])
+@jwt_required()
 def view_reports():
     try:
-        # verify_jwt_in_request()
-            current_user = get_jwt_identity()
+            verify_jwt_in_request()
+            #current_user = get_jwt_identity()
 
             # Get filter parameters from the query string
             year = request.args.get('year')
