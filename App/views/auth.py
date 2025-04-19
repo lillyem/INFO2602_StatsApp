@@ -68,7 +68,7 @@ def login_action():
    user = User.query.filter_by(username=data['username']).first()
 
 
-   if user and user.type == 'admin':
+   if user and user.user_type == 'admin':
        response = redirect(url_for('admin_views.admin_home'))  # change this line
 
 

@@ -8,11 +8,11 @@ class User(db.Model):
     username =  db.Column(db.String(120), nullable=False, unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
-    type = db.Column(db.String(50)) 
+    user_type = db.Column(db.String(50)) 
 
     __mapper_args__ = {
         'polymorphic_identity': 'user',
-        'polymorphic_on': type
+        'polymorphic_on': user_type
     }
 
     def __init__(self, username, email, password):
@@ -25,7 +25,7 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'type': self.type
+            'user_type': self.user_type
         }
 
     def set_password(self, password):
@@ -37,7 +37,7 @@ class User(db.Model):
         return check_password_hash(self.password, password)
     
     def is_admin(self):
-        return self.type == 'admin'
+        return self.user_type == 'admin'
     
     def __repr__(self):
         return f'<User {self.id} - {self.username}>'
@@ -81,7 +81,7 @@ class Admin(User):
             "username": self.username,
             "email": self.email,
             "staff_id": self.staff_id,
-            "type": self.type
+            "user_type": self.user_type
         }
 
     def __repr__(self):
