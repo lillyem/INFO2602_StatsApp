@@ -160,7 +160,7 @@ def view_reports():
                 selected_year=year,
                 selected_campus=campus,
                 selected_category=category,
-                is_authenticated=True
+                #is_authenticated=True
             )
 
     except Exception as e:
