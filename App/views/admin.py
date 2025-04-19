@@ -9,6 +9,7 @@ from App.models.report import Report
 from App.models import Chart
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.utils import secure_filename
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity, get_jwt
 
 
 admin_views = Blueprint('admin_views', __name__, template_folder='../templates/admin')
@@ -33,7 +34,7 @@ def setup_admin(app):
    admin.add_view(AdminView(User, db.session))
 
 
-@admin_views.route('/admin')
+""" @admin_views.route('/admin')
 def admin_home():
    try:
        verify_jwt_in_request()
@@ -44,7 +45,21 @@ def admin_home():
            return redirect(url_for('auth_views.login_page'))
    except Exception:
        flash("Please log in as an admin.")
-       return redirect(url_for('auth_views.login_page'))
+       return redirect(url_for('auth_views.login_page')) """
+@admin_views.route('/admin')
+def admin_home():
+    try:
+        verify_jwt_in_request()
+        claims = get_jwt()
+        # print("JWT Claims >>>", claims)
+        if claims.get('role') == "admin":
+            return render_template('admin/admin_index.html', is_authenticated=True)
+        else:
+            flash("Admins only.")
+            return redirect(url_for('auth_views.login_page'))
+    except Exception as e:
+        flash("Please log in as an admin.")
+        return redirect(url_for('auth_views.login_page'))
    
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'App', 'static', 'reports')
 ALLOWED_EXTENSIONS = {'pdf', 'csv', 'xlsx'}
