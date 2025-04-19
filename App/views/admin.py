@@ -164,7 +164,22 @@ def view_reports():
         flash('Please log in to view reports.')
         return redirect(url_for('auth_views.login_page')) 
  
+""" @admin_views.route('/admin/delete-report/<int:report_id>', methods=['POST'])
+@login_required
+def delete_report(report_id):
+    report = Report.query.get_or_404(report_id)
 
+    try:
+        db.session.delete(report)
+        db.session.commit()
+        flash('Report deleted successfully.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting report: {str(e)}', 'error')
+
+    return redirect(url_for('admin_views.view_reports')) """
+
+    
 @admin_views.route('/admin/upload-chart', methods=['GET', 'POST'])
 @jwt_required()
 def upload_chart():
@@ -257,3 +272,51 @@ def view_charts():
     except Exception as e:
         flash('Please log in to view reports.')
         return redirect(url_for('auth_views.login_page')) 
+
+@admin_views.route('/admin/delete-chart/<int:chart_id>', methods=['POST'])
+@jwt_required()
+def delete_chart(chart_id):
+    try:
+        chart = Chart.query.get(chart_id)
+
+        if not chart:
+            flash('Chart not found.')
+            return redirect(url_for('admin_views.view_charts'))
+
+        # Remove image file if it exists
+        if chart.image:
+            image_path = os.path.join(CHART_UPLOAD_FOLDER, chart.image)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+
+        db.session.delete(chart)
+        db.session.commit()
+
+        flash('Chart deleted successfully.')
+        return redirect(url_for('admin_views.view_charts'))
+
+    except Exception as e:
+        flash('An error occurred while deleting the chart.')
+        print(f"[ERROR] Delete chart: {e}")
+        return redirect(url_for('admin_views.view_charts'))
+
+@admin_views.route('/charts/update-title/<int:chart_id>', methods=['POST'])
+@jwt_required()
+def update_chart_title(chart_id):
+    try:
+        chart = Chart.query.get(chart_id)
+
+        new_title = request.form.get('title')
+
+        if new_title:
+            chart.title = new_title
+            db.session.commit()
+            flash('Chart title updated successfully.', 'success')
+        else:
+            flash('Please enter a new title.', 'warning')
+
+        return redirect(url_for('admin_views.view_charts'))
+    except Exception as e:
+        flash('An error occurred while changing the name.')
+        print(f"[ERROR] Delete chart: {e}")
+        return redirect(url_for('admin_views.view_charts'))

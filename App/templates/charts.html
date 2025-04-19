@@ -44,6 +44,21 @@
           {% if chart.data %}
             <p><strong>Description:</strong> {{ chart.data }}</p>
           {% endif %}
+          {% if is_authenticated %}
+            {% if current_user.is_admin() %}
+  <form method="POST" action="{{ url_for('admin_views.delete_chart', chart_id=chart.id) }}" style="margin-top: 10px;">
+    <button type="submit" class="btn red darken-1">Delete</button>
+  </form>
+  <form method="POST" action="{{ url_for('admin_views.update_chart_title', chart_id=chart.id) }}" class="row" style="margin-top: 10px;">
+    <div class="input-field col s8">
+      <input type="text" name="title" placeholder="New chart title" required>
+    </div>
+    <div class="input-field col s4">
+      <button type="submit" class="btn blue">Update Title</button>
+    </div>
+  </form>
+  {%endif%}
+  {%endif%}
         </div>
       {% endfor %}
     {% else %}
