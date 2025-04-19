@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
-
+from App.models import User
 
 from.index import index_views
 
@@ -65,11 +65,10 @@ def login_action():
 
 
    # Get user object from DB to check type
-   from App.models import User
    user = User.query.filter_by(username=data['username']).first()
 
 
-   if user and user.type == 'admin':
+   if user and user.user_type == 'admin':
        response = redirect(url_for('admin_views.admin_home'))  # change this line
 
 

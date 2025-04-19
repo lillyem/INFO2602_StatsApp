@@ -33,19 +33,6 @@ def setup_admin(app):
    admin = Admin(app, name='FlaskMVC', template_mode='bootstrap3')
    admin.add_view(AdminView(User, db.session))
 
-
-""" @admin_views.route('/admin')
-def admin_home():
-   try:
-       verify_jwt_in_request()
-       if current_user and current_user.type == 'admin':
-           return render_template('admin/admin_index.html', is_authenticated=True)
-       else:
-           flash("Admins only.")
-           return redirect(url_for('auth_views.login_page'))
-   except Exception:
-       flash("Please log in as an admin.")
-       return redirect(url_for('auth_views.login_page')) """
 @admin_views.route('/admin')
 def admin_home():
     try:
@@ -77,7 +64,7 @@ def allowed_file(filename, allowed_exts):
 @admin_views.route('/admin/upload', methods=['GET', 'POST'])
 @jwt_required()
 def upload_report():
-    if not current_user or current_user.type != 'admin':
+    if not current_user or current_user.user_type != 'admin':
         flash('Admins only.')
         return redirect(url_for('auth_views.login_page'))
 
@@ -132,73 +119,60 @@ def upload_report():
 @jwt_required()
 def view_reports():
     try:
-        verify_jwt_in_request()
+        # verify_jwt_in_request()
+            current_user = get_jwt_identity()
 
-        # Get filter parameters from the query string
-        year = request.args.get('year')
-        campus = request.args.get('campus')
-        category = request.args.get('category')  # report_type
+            # Get filter parameters from the query string
+            year = request.args.get('year')
+            campus = request.args.get('campus')
+            category = request.args.get('category')  # report_type
 
-        # Base query
-        query = Report.query
+            # Base query
+            query = Report.query
 
-        if year:
-            query = query.filter_by(year=year)
-        if campus:
-            query = query.filter_by(campus=campus)
-        if category:
-            query = query.filter_by(report_type=category)
+            if year:
+                query = query.filter_by(year=year)
+            if campus:
+                query = query.filter_by(campus=campus)
+            if category:
+                query = query.filter_by(report_type=category)
 
-        reports = query.all()
+            reports = query.all()
 
-        enriched_reports = []
-        for report in reports:
-            datafile = report.datafile
-            enriched_reports.append({
-                'title': report.title,
-                'description': report.description,
-                'campus': report.campus,
-                'report_type': report.report_type,
-                'year': report.year,
-                'filename': datafile.filename,
-                'filepath': os.path.join('static', 'reports', datafile.filename),
-                'uploaded_by': report.admin_id,
-                'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
-            })
+            enriched_reports = []
+            for report in reports:
+                datafile = report.datafile
+                enriched_reports.append({
+                    'title': report.title,
+                    'description': report.description,
+                    'campus': report.campus,
+                    'report_type': report.report_type,
+                    'year': report.year,
+                    'filename': datafile.filename,
+                    'filepath': os.path.join('static', 'reports', datafile.filename),
+                    'uploaded_by': report.admin_id,
+                    'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
+                })
 
-        return render_template(
-            'view_reports.html',
-            reports=enriched_reports,
-            selected_year=year,
-            selected_campus=campus,
-            selected_category=category,
-            is_authenticated=True
-        )
+            return render_template(
+                'view_reports.html',
+                reports=enriched_reports,
+                selected_year=year,
+                selected_campus=campus,
+                selected_category=category,
+                is_authenticated=True
+            )
 
     except Exception as e:
-        flash('Please log in to view reports.')
-        return redirect(url_for('auth_views.login_page')) 
- 
-""" @admin_views.route('/admin/delete-report/<int:report_id>', methods=['POST'])
-@login_required
-def delete_report(report_id):
-    report = Report.query.get_or_404(report_id)
-
-    try:
-        db.session.delete(report)
-        db.session.commit()
-        flash('Report deleted successfully.', 'success')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'Error deleting report: {str(e)}', 'error')
-
-    return redirect(url_for('admin_views.view_reports')) """
+            flash('Please log in to view reports.')
+            return redirect(url_for('auth_views.login_page')) 
+    
 
     
 @admin_views.route('/admin/upload-chart', methods=['GET', 'POST'])
 @jwt_required()
 def upload_chart():
-    if not current_user or current_user.type != 'admin':
+    if not current_user or current_user.user_type != 'admin':
         flash('Admins only.')
         return redirect(url_for('auth_views.login_page'))
 
