@@ -116,7 +116,7 @@ def upload_report():
 
 
 @admin_views.route('/admin/reports', methods=['GET'])
-@jwt_required()
+@jwt_required(locations=["cookies"])
 def view_reports():
     try:
         # verify_jwt_in_request()
@@ -167,7 +167,6 @@ def view_reports():
             flash('Please log in to view reports.')
             return redirect(url_for('auth_views.login_page')) 
     
-
     
 @admin_views.route('/admin/upload-chart', methods=['GET', 'POST'])
 @jwt_required()
