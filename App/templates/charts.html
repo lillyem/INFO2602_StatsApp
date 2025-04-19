@@ -22,47 +22,54 @@
       </select>
       <label for="chart_type">Chart Type</label>
     </div>
-    <div class="input-field col s2 center-align">
-      <button type="submit" class="btn purple darken-2">Filter</button>
+    <div class="input-field col s2" style="margin-top: 25px;">
+      <button type="submit" class="btn deep-purple btn-block">Filter</button>
     </div>
   </form>
 
-  <div class="section">
+  <!-- Charts Grid -->
+  <div class="row">
     {% if charts %}
       {% for chart in charts %}
-        <div class="card white z-depth-1" style="padding: 20px; margin-bottom: 20px;">
-          <h5>{{ chart.title }} ({{ chart.chart_type }})</h5>
+      <div class="col s12 m6 l5">
+          <div class="card white z-depth-1" style="padding: 15px; margin-bottom: 20px;">
+            <h6 class="center-align" style="font-weight: bold;">{{ chart.title }}</h6>
 
-          {% if chart.image %}
-            <div class="center-align">
-              <img src="{{ url_for('static', filename='charts/' + chart.image) }}" 
-                   alt="{{ chart.title }}" 
-                   style="max-width: 100%; height: auto; margin: 10px 0;">
-            </div>
-          {% endif %}
+            {% if chart.image %}
+              <div class="center-align">
+                <img src="{{ url_for('static', filename='charts/' + chart.image) }}" 
+                     alt="{{ chart.title }}" 
+                     style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 8px;">
+              </div>
+            {% endif %}
 
-          {% if chart.data %}
-            <p><strong>Description:</strong> {{ chart.data }}</p>
-          {% endif %}
-          {% if is_authenticated %}
-            {% if current_user.is_admin() %}
-  <form method="POST" action="{{ url_for('admin_views.delete_chart', chart_id=chart.id) }}" style="margin-top: 10px;">
-    <button type="submit" class="btn red darken-1">Delete</button>
-  </form>
-  <form method="POST" action="{{ url_for('admin_views.update_chart_title', chart_id=chart.id) }}" class="row" style="margin-top: 10px;">
-    <div class="input-field col s8">
-      <input type="text" name="title" placeholder="New chart title" required>
-    </div>
-    <div class="input-field col s4">
-      <button type="submit" class="btn blue">Update Title</button>
-    </div>
-  </form>
-  {%endif%}
-  {%endif%}
+            {% if chart.data %}
+              <p><strong>Description:</strong> {{ chart.data }}</p>
+            {% endif %}
+
+            {% if is_authenticated and current_user.is_admin() %}
+              <!-- Update Title -->
+              <form method="POST" action="{{ url_for('admin_views.update_chart_title', chart_id=chart.id) }}" class="row" style="margin-top: 10px;">
+                <div class="input-field col s12">
+                  <input type="text" name="title" placeholder="New chart title" required>
+                </div>
+                <div class="input-field col s12">
+                  <button type="submit" class="btn deep-purple btn-block">Update Title</button>
+                </div>
+              </form>
+
+              <!-- Delete Button -->
+              <form method="POST" action="{{ url_for('admin_views.delete_chart', chart_id=chart.id) }}" class="row" style="margin-top: -10px;">
+                <div class="col s12">
+                  <button type="submit" class="btn deep-purple btn-block">Delete</button>
+                </div>
+              </form>
+            {% endif %}
+          </div>
         </div>
       {% endfor %}
     {% else %}
-      <p>No charts found.</p>
+      <p class="center-align">No charts found.</p>
     {% endif %}
   </div>
 </div>
