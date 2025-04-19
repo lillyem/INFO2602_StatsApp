@@ -86,7 +86,8 @@
         <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex; gap: 12px; margin: 0;">
           <li><a href="/">Home</a></li>
     
-          <!-- {% if is_authenticated %} -->
+          <p>Authenticated: {{ is_authenticated }}</p>
+          {% if is_authenticated %}
             {% if current_user.is_admin() %}
               <li><a href="/admin">Admin</a></li>
               <li><a href="/admin/upload">Upload Reports</a></li>
@@ -95,9 +96,9 @@
             <li><a href="/admin/reports">View Reports</a></li>
             <li><a href="/admin/charts">View Charts</a></li>
             <li><a href="/logout">Logout</a></li>
-          <!-- {% else %} -->
+          {% else %}
             <li><a href="/login">Login</a></li>
-          <!-- {% endif %} -->
+          {% endif %}
         </ul>
     
       </div>
