@@ -116,10 +116,11 @@ def upload_report():
 
 
 @admin_views.route('/admin/reports', methods=['GET'])
-@jwt_required()
+@jwt_required(locations=["cookies"])
 def view_reports():
     try:
         # verify_jwt_in_request()
+<<<<<<< HEAD
             current_user = get_jwt_identity()
 
             # Get filter parameters from the query string
@@ -154,6 +155,45 @@ def view_reports():
                     'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
                 })
 
+=======
+        current_user = get_jwt_identity()
+
+        if(current_user):
+            flash(f'Current user: {get_jwt_identity()}')
+
+            # Get filter parameters from the query string
+            year = request.args.get('year')
+            campus = request.args.get('campus')
+            category = request.args.get('category')  # report_type
+
+            # Base query
+            query = Report.query
+
+            if year:
+                query = query.filter_by(year=year)
+            if campus:
+                query = query.filter_by(campus=campus)
+            if category:
+                query = query.filter_by(report_type=category)
+
+            reports = query.all()
+
+            enriched_reports = []
+            for report in reports:
+                datafile = report.datafile
+                enriched_reports.append({
+                    'title': report.title,
+                    'description': report.description,
+                    'campus': report.campus,
+                    'report_type': report.report_type,
+                    'year': report.year,
+                    'filename': datafile.filename,
+                    'filepath': os.path.join('static', 'reports', datafile.filename),
+                    'uploaded_by': report.admin_id,
+                    'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
+                })
+
+>>>>>>> 71366cb70188751f3deefc9681ff463c48242ba2
             return render_template(
                 'view_reports.html',
                 reports=enriched_reports,
@@ -167,6 +207,23 @@ def view_reports():
             flash('Please log in to view reports.')
             return redirect(url_for('auth_views.login_page')) 
     
+<<<<<<< HEAD
+=======
+""" @admin_views.route('/admin/delete-report/<int:report_id>', methods=['POST'])
+@login_required
+def delete_report(report_id):
+    report = Report.query.get_or_404(report_id)
+
+    try:
+        db.session.delete(report)
+        db.session.commit()
+        flash('Report deleted successfully.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting report: {str(e)}', 'error')
+
+    return redirect(url_for('admin_views.view_reports')) """
+>>>>>>> 71366cb70188751f3deefc9681ff463c48242ba2
 
     
 @admin_views.route('/admin/upload-chart', methods=['GET', 'POST'])
