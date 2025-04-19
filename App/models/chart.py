@@ -8,21 +8,20 @@ class Chart(db.Model):
     title = db.Column(db.String(255), nullable=False)
     chart_type = db.Column(db.String(50), nullable=False) 
     data = db.Column(db.Text, nullable=False)
-    #report_id = db.Column(db.Integer, db.ForeignKey('report.id'), nullable=False)
-
-    def __init__(self, title, chart_type, data):
+    image = db.Column(db.String(255), nullable=True)
+    def __init__(self, title, chart_type, data, image):
         self.title = title
         self.chart_type = chart_type
         self.data = data
-        #self.report_id = report_id
+        self.image = image
 
     def get_json(self):
         return {
             "id": self.id,
             "title": self.title,
             "chart_type": self.chart_type,
-            "data": self.data
-            #"report_id": self.report_id
+            "data": self.data,
+            "image": self.image
         }
 
     def __repr__(self):

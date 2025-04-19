@@ -32,8 +32,18 @@
       {% for chart in charts %}
         <div class="card white z-depth-1" style="padding: 20px; margin-bottom: 20px;">
           <h5>{{ chart.title }} ({{ chart.chart_type }})</h5>
-          <p><strong>Raw Data:</strong></p>
-          <pre>{{ chart.data }}</pre>
+
+          {% if chart.image %}
+            <div class="center-align">
+              <img src="{{ url_for('static', filename='charts/' + chart.image) }}" 
+                   alt="{{ chart.title }}" 
+                   style="max-width: 100%; height: auto; margin: 10px 0;">
+            </div>
+          {% endif %}
+
+          {% if chart.data %}
+            <p><strong>Description:</strong> {{ chart.data }}</p>
+          {% endif %}
         </div>
       {% endfor %}
     {% else %}

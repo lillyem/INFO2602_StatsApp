@@ -207,8 +207,8 @@ def upload_chart():
             chart = Chart(
                 title=title,
                 chart_type=chart_type,
-                data=filename  # or file_path if you want to store full path
-                #report_id=int(report_id)
+                data=description,
+                image = filename
             )
             db.session.add(chart)
             db.session.commit()
@@ -245,6 +245,7 @@ def view_charts():
                 'title': chart.title,
                 'chart_type': chart.chart_type,
                 'data': chart.data,
+                'image':chart.image
             })
 
         return render_template(
