@@ -129,56 +129,60 @@ def upload_report():
 
 
 @admin_views.route('/admin/reports', methods=['GET'])
-@jwt_required()
+@jwt_required(locations=["cookies"])
 def view_reports():
     try:
-        verify_jwt_in_request()
+        # verify_jwt_in_request()
+        current_user = get_jwt_identity()
 
-        # Get filter parameters from the query string
-        year = request.args.get('year')
-        campus = request.args.get('campus')
-        category = request.args.get('category')  # report_type
+        if(current_user):
+            flash(f'Current user: {get_jwt_identity()}')
 
-        # Base query
-        query = Report.query
+            # Get filter parameters from the query string
+            year = request.args.get('year')
+            campus = request.args.get('campus')
+            category = request.args.get('category')  # report_type
 
-        if year:
-            query = query.filter_by(year=year)
-        if campus:
-            query = query.filter_by(campus=campus)
-        if category:
-            query = query.filter_by(report_type=category)
+            # Base query
+            query = Report.query
 
-        reports = query.all()
+            if year:
+                query = query.filter_by(year=year)
+            if campus:
+                query = query.filter_by(campus=campus)
+            if category:
+                query = query.filter_by(report_type=category)
 
-        enriched_reports = []
-        for report in reports:
-            datafile = report.datafile
-            enriched_reports.append({
-                'title': report.title,
-                'description': report.description,
-                'campus': report.campus,
-                'report_type': report.report_type,
-                'year': report.year,
-                'filename': datafile.filename,
-                'filepath': os.path.join('static', 'reports', datafile.filename),
-                'uploaded_by': report.admin_id,
-                'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
-            })
+            reports = query.all()
 
-        return render_template(
-            'view_reports.html',
-            reports=enriched_reports,
-            selected_year=year,
-            selected_campus=campus,
-            selected_category=category,
-            is_authenticated=True
-        )
+            enriched_reports = []
+            for report in reports:
+                datafile = report.datafile
+                enriched_reports.append({
+                    'title': report.title,
+                    'description': report.description,
+                    'campus': report.campus,
+                    'report_type': report.report_type,
+                    'year': report.year,
+                    'filename': datafile.filename,
+                    'filepath': os.path.join('static', 'reports', datafile.filename),
+                    'uploaded_by': report.admin_id,
+                    'created_at': report.created_at.strftime('%Y-%m-%d %H:%M'),
+                })
+
+            return render_template(
+                'view_reports.html',
+                reports=enriched_reports,
+                selected_year=year,
+                selected_campus=campus,
+                selected_category=category,
+                is_authenticated=True
+            )
 
     except Exception as e:
-        flash('Please log in to view reports.')
-        return redirect(url_for('auth_views.login_page')) 
- 
+            flash('Please log in to view reports.')
+            return redirect(url_for('auth_views.login_page')) 
+    
 """ @admin_views.route('/admin/delete-report/<int:report_id>', methods=['POST'])
 @login_required
 def delete_report(report_id):
