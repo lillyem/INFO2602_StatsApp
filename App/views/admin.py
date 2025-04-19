@@ -45,6 +45,7 @@ def admin_home():
             flash("Admins only.")
             return redirect(url_for('auth_views.login_page'))
     except Exception as e:
+        print(e)
         flash("Please log in as an admin.")
         return redirect(url_for('auth_views.login_page'))
    

@@ -6,6 +6,7 @@ def login(username, password):
   user = User.query.filter_by(username=username).first()
   if user and user.check_password(password):
     if user.is_admin():
+       print(f"Logging in {user} as admin")
        return create_access_token(identity = username, additional_claims = {"role":"admin"})
     else:
        return create_access_token(identity=username)
@@ -20,7 +21,7 @@ def setup_jwt(app):
   def user_identity_lookup(identity):
     user = User.query.filter_by(username=identity).one_or_none()
     if user:
-        return user.id
+        return str(user.id)
     return None
 
   @jwt.user_lookup_loader

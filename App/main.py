@@ -5,8 +5,8 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 
-from App.database import db
-from App.database import init_db
+
+from App.database import init_db, db
 from App.config import load_config
 
 

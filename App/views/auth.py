@@ -60,21 +60,24 @@ def login_action():
    if not token:
        flash('Bad username or password given')
        return redirect(url_for('auth_views.login_page'))
-  
-   response = redirect(url_for('index_views.home_page'))  # Default redirect
-
 
    # Get user object from DB to check type
    user = User.query.filter_by(username=data['username']).first()
 
 
    if user and user.user_type == 'admin':
-       response = redirect(url_for('admin_views.admin_home'))  # change this line
-
-
+      response = redirect(url_for('admin_views.admin_home'))  # change this line
+      set_access_cookies(response, token)
+      flash('Login Successful')
+      return response
+  
+   response = redirect(url_for('index_views.home_page'))  # Default redirect
    set_access_cookies(response, token)
    flash('Login Successful')
    return response
+
+
+
 
 
 @auth_views.route('/logout', methods=['GET'])
